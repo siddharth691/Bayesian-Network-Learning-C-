@@ -3,12 +3,20 @@
 #include<fstream>
 #include<time.h>
 #include<bits/stdc++.h>
+#include<memory>
 using namespace std;
+/*
 
+This code would work for C++17 only since C++17 has support for shared_ptr with array type
+g++ and gcc -7 has full c++17 
+To upgrade to g++-7 use the instructions in the link:
+https://gist.github.com/jlblancoc/99521194aba975286c80f93e47966dc5
+
+*/
 struct node
 {
 	int no_parents;
-	double *cpd;
+	shared_ptr<double[]> cpd;
 };
 
 struct data_given
@@ -37,19 +45,21 @@ class graph
 {
 private:
 	int no_nodes;
-	list<int> *adj;
-	struct node *node_info;
-	unordered_map<int, list<int>> *parents;
+	shared_ptr<list<int>[]> adj;
+	shared_ptr<struct node[]> node_info;
+	shared_ptr<unordered_map<int, list<int>>> parents;
 
 public:
 	
 	graph(int nodes);
 
+	int get_no_nodes() {return no_nodes;}
+
 	void add_children(int v, list<int> w);
 
 	void create_graph(unordered_map<int, list<int>> parent_child);
 
-	void topologicalSortUtil(int v, bool visited[], stack<int> &Stack);
+	void topologicalSortUtil(int v, shared_ptr<bool[]>, stack<int> &Stack);
 
 	stack<int> topologicalSort();
 

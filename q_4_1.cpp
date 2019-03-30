@@ -3,6 +3,8 @@
 #include<fstream>
 #include<bits/stdc++.h>
 #include<time.h>
+#include<memory>
+
 #include "graph.h"
 using namespace std;
 

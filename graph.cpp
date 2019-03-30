@@ -3,6 +3,7 @@
 #include<fstream>
 #include<bits/stdc++.h>
 #include<time.h>
+#include<memory>
 
 using namespace std;
 #include"graph.h"
@@ -101,9 +102,12 @@ int helper::get_integer_from_assignment(vector<bool> assignment)
 graph::graph(int nodes)
 {
 	no_nodes = nodes;
-	adj = new list<int>[no_nodes];
-	node_info = new struct node[no_nodes];
-	parents = new unordered_map<int, list<int>>;
+	adj = shared_ptr<list<int>[]>(new list<int>[no_nodes]);
+	// adj = new list<int>[no_nodes];
+	node_info = shared_ptr<struct node[]>(new node[no_nodes]);
+	// node_info = new struct node[no_nodes];
+	parents = shared_ptr<unordered_map<int, list<int>>>(new unordered_map<int, list<int>>);
+	// parents = new unordered_map<int, list<int>>;
 }
 
 //function to add children
@@ -145,8 +149,8 @@ void graph::create_graph(unordered_map<int, list<int>> parent_child)
 		{
 			// there are no parents for this node
 			// assigning random double cpd[2] = { P[node=false], P[node=true]}
-
-			node_info[i].cpd = new double[2];
+			node_info[i].cpd = shared_ptr<double[]>(new double[2]);
+			// node_info[i].cpd = new double[2];
 			double f = (double)rand() /RAND_MAX;
 			node_info[i].cpd[0] = f;
 			node_info[i].cpd[1] = 1-f;
@@ -154,8 +158,9 @@ void graph::create_graph(unordered_map<int, list<int>> parent_child)
 		}
 		else
 		{
-			//some random Conditional probability for each (child,parent1,parent2..) combination vector<double> of size 2^(no_of parents + 1) 
-			node_info[i].cpd = new double[int(pow(2, node_info[i].no_parents+1))];
+			//some random Conditional probability for each (child,parent1,parent2..) combination vector<double> of size 2^(no_of parents + 1)
+			node_info[i].cpd = shared_ptr<double[]>(new double[int(pow(2, node_info[i].no_parents+1))]);
+			// node_info[i].cpd = new double[int(pow(2, node_info[i].no_parents+1))];
 			int cur_index=0;
 			for(int j=0; j<int(pow(2, node_info[i].no_parents)); j++)
 			{	
@@ -170,7 +175,7 @@ void graph::create_graph(unordered_map<int, list<int>> parent_child)
 	}
 }
 
-void graph::topologicalSortUtil(int v, bool visited[], stack<int> &Stack) 
+void graph::topologicalSortUtil(int v, shared_ptr<bool[]> visited, stack<int> &Stack) 
 { 
     visited[v] = true; 
   
@@ -185,7 +190,7 @@ stack<int> graph::topologicalSort()
 { 
     stack<int> Stack; 
   
-    bool *visited = new bool[no_nodes]; 
+    shared_ptr<bool[]> visited = shared_ptr<bool[]>(new bool[no_nodes]); 
     for (int i = 0; i < no_nodes; i++) 
         visited[i] = false; 
 
